@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 shadow" style="min-width: 350px;">
+      <h3 class="mb-3 text-center">Login</h3>
+      <form id="loginForm">
+        <div class="mb-3">
+          <label for="id" class="form-label">User ID</label>
+          <input type="text" class="form-control" id="id" required>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+        <div id="errorMsg" class="text-danger mt-2" style="display:none;"></div>
+      </form>
+    </div>
+  </div>
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwSgOYlzi3-dFqrSnmH16BKmUo1zXMUBzVK-OwQjdH43n9yRSLSWPgJFfjZfi_ksfJs7w/exec'; // <-- Replace with your Apps Script web app URL
+    document.getElementById('loginForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('id').value;
+      const password = document.getElementById('password').value;
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({action: 'login', id, password}),
+        headers: {'Content-Type': 'application/json'}
+      });
+      const data = await res.json();
+      if (data.success) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+        window.location.href = 'dashboard.html';
+      } else {
+        document.getElementById('errorMsg').textContent = data.error || 'Login failed';
+        document.getElementById('errorMsg').style.display = 'block';
+      }
+    };
+  </script>
+</body>
+</html> 
